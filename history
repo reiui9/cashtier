@@ -1,0 +1,7 @@
+1. admob modification
+    -> node_modules/react-native-admob/android/build.gradle
+    -> compile 'com.google.android.gms:play-services-ads:15.0.0'
+
+2. login
+    -> npm i apsl-react-native-button --save
+    -> npm i react-native-extended-stylesheet --save
