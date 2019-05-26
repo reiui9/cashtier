@@ -39,7 +39,7 @@ export default class Main extends Component<Props> {
     AdMobRewarded.addEventListener('adClosed',
       () => {
         console.log('AdMobRewarded => adClosed');
-        AdMobRewarded.requestAd().catch(error => console.warn(error));
+        // AdMobRewarded.requestAd().catch(error => console.warn(error));
       }
     );
     AdMobRewarded.addEventListener('adLeftApplication',
@@ -69,7 +69,6 @@ export default class Main extends Component<Props> {
   render() {
     return (
         <View style={styles.container}>
-          <Header title="Main" />
           <View style={styles.userinfo}>
             <View style={styles.userinfo_inner}>
               <Text style={styles.text}>유저 아이디 : {this.state.id}</Text>

@@ -12,7 +12,9 @@
     "react-native": "^0.59.3",
     "react-native-admob": "^2.0.0-beta.5",
     "react-native-extended-stylesheet": "^0.11.1",
-    "react-native-naver-login": "^1.2.1"
+    "react-native-gesture-handler": "^1.2.1",
+    "react-native-naver-login": "^1.2.1",
+    "react-navigation": "^3.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.4.4",

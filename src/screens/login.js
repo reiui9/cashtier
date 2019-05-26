@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { View, Text } from "react-native";
 import { Header, Card, CardSection, Input, PasswordTextInput, Button, Spinner } from "../components";
+import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 export default class LoginForm extends Component<Props> {
   state = { 
@@ -21,6 +22,7 @@ export default class LoginForm extends Component<Props> {
     else {
       this.setState({ error: "", loading: true });
     }
+    this.props.navigation.navigate('Main')
   }
 
   onLoginFail() {
@@ -43,7 +45,10 @@ export default class LoginForm extends Component<Props> {
     if (this.state.loading) {
       return <Spinner size="small" />;
     }
+    // return <Button onPress={this.onButtonPress.bind(this)}>Log in</Button>;
+
     return <Button onPress={this.onButtonPress.bind(this)}>Log in</Button>;
+    
   }
 
   renderError() {
