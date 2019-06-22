@@ -1,59 +1,42 @@
 import React, { Component } from "react";
 import { View, Text } from "react-native";
 import { Header, Card, CardSection, Input, PasswordTextInput, Button, Spinner } from "../components";
-import Auth from "../util/auth";
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import firebase from 'firebase'
 
-export default class LoginForm extends Component<Props> {
+export default class SignupForm extends Component<Props> {
 
   constructor(props) {
     super(props);
-    this.state = { email: '', password: '', error: ''};
+    this.state = { email: '', password: '', password2: '', error: ''};
   }
 
   state = { 
     email: "", 
     password: "", 
+    password2: "", 
     error: "", 
     loading: false,
     loggedIn: null
   };
 
-
-  componentDidMount() {
-    firebase.initializeApp({
-      apiKey: "AIzaSyCtRqoLcxKx6WIxhQ-edfaO1WqqjLwXkjw",
-      authDomain: "adtree-bc7dc.firebaseapp.com",
-      databaseURL: "https://adtree-bc7dc.firebaseio.com/",
-      storageBucket: "adtree-bc7dc.appspot.com",
-    });
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ loggedIn: true })
-      } else {
-        this.setState({ loggedIn: false })
-      }
-    })
-  }
-
-  onLoginButtonPress() {
-    console.log("onLoginButtonPress() -> 1")
-
+  onSignupButtonPress() {
     this.setState({ error: '', loading: true })
-    const { email, password } = this.state;
-
-    console.log("onLoginButtonPress() -> 2")
-
-    Auth.login(email, password)
-    .then((result) => {
-      result = result.toString()
-      if ( result == "true" ){
-        this.onLoginSuccess.bind(this)()
-      }
-      else
-        this.onLoginFail.bind(this)(result)
-    })
+    const { email, password, password2 } = this.state;
+    if(password != password2){
+        this.onLoginFail.bind(this)('Passwoard mismatch!')
+    }
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then(this.onLoginSuccess.bind(this))
+      .catch((error) => {
+            let errorCode = error.code
+            let errorMessage = error.message;
+            if (errorCode == 'auth/weak-password') {
+              this.onLoginFail.bind(this)('Weak password!')
+            } else {
+              this.onLoginFail.bind(this)(errorMessage)
+            }
+        });
   }
 
   onLoginFail(errorMessage) {
@@ -70,31 +53,14 @@ export default class LoginForm extends Component<Props> {
       loading: false,
       error: ""
     });
-    this.props.navigation.navigate('Main')
-  }
-
-  pressSignup() {
-    this.setState({
-      email: "",
-      password: "",
-      loading: false,
-      error: ""
-    });
-    this.props.navigation.navigate('SignupForm')
-  }
-
-  renderLoginButton() {
-    if (this.state.loading) {
-      return <Spinner size="small" />;
-    }
-    return <Button onPress={this.onLoginButtonPress.bind(this)}>Log in</Button>;
+    this.props.navigation.navigate('LoginForm')
   }
 
   renderSignupButton() {
     if (this.state.loading) {
       return <Spinner size="small" />;
     }
-    return <Button onPress={this.pressSignup.bind(this)}>Sign up</Button>;
+    return <Button onPress={this.onSignupButtonPress.bind(this)}>Sign up</Button>;
   }
 
   renderError() {
@@ -107,7 +73,7 @@ export default class LoginForm extends Component<Props> {
   render() {
     return (
       <View>
-        <Header title="Login" />
+        <Header title="Signup" />
 
         <Card>
           <CardSection>
@@ -128,9 +94,16 @@ export default class LoginForm extends Component<Props> {
             />
           </CardSection>
 
-          {this.state.error.length > 0 && <Text style={styles.errorStyle}>{this.state.error}</Text>}
+        <CardSection>
+            <PasswordTextInput
+              placeholder="Enter Password Again"
+              label="Password"
+              value={this.state.password2}
+              onChangeText={password2 => this.setState({ password2 })}
+            />
+          </CardSection>
 
-          <CardSection>{this.renderLoginButton()}</CardSection>
+          {this.state.error.length > 0 && <Text style={styles.errorStyle}>{this.state.error}</Text>}
 
           <CardSection>{this.renderSignupButton()}</CardSection>
 
