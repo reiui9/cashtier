@@ -3,7 +3,6 @@ import { View, Text } from "react-native";
 import { Header, Card, CardSection, Input, PasswordTextInput, Button, Spinner } from "../components";
 import Auth from "../util/auth";
 import { createStackNavigator, createAppContainer } from 'react-navigation';
-import firebase from 'firebase'
 
 export default class LoginForm extends Component<Props> {
 
@@ -12,7 +11,7 @@ export default class LoginForm extends Component<Props> {
     this.state = { email: '', password: '', error: ''};
   }
 
-  state = { 
+  state = {
     email: "", 
     password: "", 
     error: "", 
@@ -20,35 +19,15 @@ export default class LoginForm extends Component<Props> {
     loggedIn: null
   };
 
-
-  componentDidMount() {
-    firebase.initializeApp({
-      apiKey: "AIzaSyCtRqoLcxKx6WIxhQ-edfaO1WqqjLwXkjw",
-      authDomain: "adtree-bc7dc.firebaseapp.com",
-      databaseURL: "https://adtree-bc7dc.firebaseio.com/",
-      storageBucket: "adtree-bc7dc.appspot.com",
-    });
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ loggedIn: true })
-      } else {
-        this.setState({ loggedIn: false })
-      }
-    })
-  }
-
   onLoginButtonPress() {
-    console.log("onLoginButtonPress() -> 1")
-
     this.setState({ error: '', loading: true })
     const { email, password } = this.state;
-
-    console.log("onLoginButtonPress() -> 2")
 
     Auth.login(email, password)
     .then((result) => {
       result = result.toString()
       if ( result == "true" ){
+        // Firebase.initUserInfo(this.state.email)
         this.onLoginSuccess.bind(this)()
       }
       else
@@ -65,12 +44,13 @@ export default class LoginForm extends Component<Props> {
 
   onLoginSuccess() {
     this.setState({
-      email: "",
       password: "",
       loading: false,
       error: ""
     });
-    this.props.navigation.navigate('Main')
+    this.props.navigation.navigate('Main', {
+       email: this.state.email
+     })
   }
 
   pressSignup() {

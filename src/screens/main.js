@@ -53,8 +53,8 @@ export default class Main extends Component<Props> {
   }
 
   init() {
-      this.setState({id: 'REIUI9'})
-      this.setState({tier: '플랑크톤'})
+      this.setState({id: this.props.navigation.getParam('email', 'NO-ID')});
+      this.setState({tier: '플랑크톤'});
   }
 
   showRewarded() {

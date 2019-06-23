@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { View, Text } from "react-native";
 import { Header, Card, CardSection, Input, PasswordTextInput, Button, Spinner } from "../components";
 import { createStackNavigator, createAppContainer } from 'react-navigation';
-import firebase from 'firebase'
+import Auth from "../util/auth";
 
 export default class SignupForm extends Component<Props> {
 
@@ -23,30 +23,27 @@ export default class SignupForm extends Component<Props> {
   onSignupButtonPress() {
     this.setState({ error: '', loading: true })
     const { email, password, password2 } = this.state;
-    if(password != password2){
-        this.onLoginFail.bind(this)('Passwoard mismatch!')
-    }
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then(this.onLoginSuccess.bind(this))
-      .catch((error) => {
-            let errorCode = error.code
-            let errorMessage = error.message;
-            if (errorCode == 'auth/weak-password') {
-              this.onLoginFail.bind(this)('Weak password!')
-            } else {
-              this.onLoginFail.bind(this)(errorMessage)
-            }
-        });
+
+    Auth.signup(email, password, password2)
+    .then((result) => {
+      result = result.toString()
+      if ( result == "true" ){
+        this.onSignupSuccess.bind(this)()
+      }
+      else
+        this.onSignupFail.bind(this)(result)
+    })
+
   }
 
-  onLoginFail(errorMessage) {
+  onSignupFail(errorMessage) {
     this.setState({
       error: errorMessage,
       loading: false
     });
   }
 
-  onLoginSuccess() {
+  onSignupSuccess() {
     this.setState({
       email: "",
       password: "",
